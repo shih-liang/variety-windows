@@ -16,12 +16,12 @@
 
 __all__ = ["project_path_not_found", "get_data_file", "get_data_path"]
 
-try:
-    from .variety_build_settings import __variety_data_directory__
-except ImportError:
-    # Variety's data directory. This is set by setup.py for permanent installations, but defaults to ../data
-    # for easy development / running from source.
-    __variety_data_directory__ = "../data"
+# try:
+#    from .variety_build_settings import __variety_data_directory__
+#except ImportError:
+#    # Variety's data directory. This is set by setup.py for permanent installations, but defaults to ../data
+#    # for easy development / running from source.
+__variety_data_directory__ = "../data"
 __license__ = "GPL-3"
 __version__ = "0.8.5"
 
@@ -54,6 +54,7 @@ def get_data_path():
     path = os.path.join(os.path.dirname(__file__), __variety_data_directory__)
 
     abs_data_path = os.path.abspath(path)
+    print(abs_data_path)
     if not os.path.exists(abs_data_path):
         raise project_path_not_found
 

@@ -174,7 +174,7 @@ def main():
     # Ctrl-C
     signal.signal(signal.SIGINT, _sigint_handler)
     signal.signal(signal.SIGTERM, _sigint_handler)
-    signal.signal(signal.SIGQUIT, _sigint_handler)
+    #signal.signal(signal.SIGQUIT, _sigint_handler)
 
     arguments = sys.argv[1:]
 

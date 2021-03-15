@@ -669,7 +669,7 @@ class Options:
         self.sources = [
             [True, Options.SourceType.FAVORITES, "The Favorites folder"],
             [True, Options.SourceType.FETCHED, "The Fetched folder"],
-            [True, Options.SourceType.FOLDER, "/usr/share/backgrounds/"],
+            [True, Options.SourceType.FOLDER, r"C:\Windows\Web"],
             [
                 True,
                 Options.SourceType.FLICKR,

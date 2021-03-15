@@ -20,7 +20,8 @@
 #
 
 import subprocess
-from locale import gettext as _
+#from locale import gettext as _
+from gettext import gettext as _
 
 from variety.plugins.IQuoteSource import IQuoteSource
 

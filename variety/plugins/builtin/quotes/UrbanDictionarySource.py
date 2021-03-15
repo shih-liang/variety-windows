@@ -15,7 +15,8 @@
 # with this program.  If not, see <http://www.gnu.org/licenses/>.
 ### END LICENSE
 
-from locale import gettext as _
+from gettext import gettext as _
+#from locale import gettext as _
 
 import requests
 

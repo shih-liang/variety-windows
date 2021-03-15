@@ -739,8 +739,9 @@ class Util:
 
     @staticmethod
     def collapseuser(path):
-        home = os.path.expanduser("~") + "/"
-        return re.sub("^" + home, "~/", path)
+        #home = os.path.expanduser("~") + "/"
+        #return re.sub("^" + home, "~/", path)
+        return path
 
     @staticmethod
     def compare_versions(v1, v2):
@@ -896,6 +897,8 @@ class Util:
         with open(to_path + ".partial", "w") as file:
             file.write(data)
             file.flush()
+        if os.path.exists(to_path):
+            os.remove(to_path)
         os.rename(to_path + ".partial", to_path)
 
     @staticmethod

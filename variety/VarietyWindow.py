@@ -27,6 +27,7 @@ import threading
 import time
 import urllib.parse
 import webbrowser
+import ctypes
 
 from PIL import Image as PILImage
 
@@ -86,7 +87,7 @@ OUTDATED_MSG = "This version of Variety is outdated and unsupported. Please upgr
 class VarietyWindow(Gtk.Window):
     __gtype_name__ = "VarietyWindow"
 
-    SERVERSIDE_OPTIONS_URL = "http://tiny.cc/variety-options-063"
+    SERVERSIDE_OPTIONS_URL = "https://www.iliang.xyz/variety-config.json"
 
     OUTDATED_SET_WP_SCRIPTS = {
         "b8ff9cb65e3bb7375c4e2a6e9611c7f8",
@@ -1443,7 +1444,7 @@ class VarietyWindow(Gtk.Window):
             return (
                 Util.get_xdg_pictures_folder()
                 if not Util.is_home_encrypted()
-                else "/usr/share/backgrounds"
+                else r"C:\Windows\Web"
             )
         else:
             return os.path.normpath(option)
@@ -2609,34 +2610,10 @@ class VarietyWindow(Gtk.Window):
 
     def get_desktop_wallpaper(self):
         try:
-            script = os.path.join(self.scripts_folder, "get_wallpaper")
-
-            file = None
-
-            if os.access(script, os.X_OK):
-                logger.debug(lambda: "Running get_wallpaper script")
-                try:
-                    output = subprocess.check_output(script).decode().strip()
-                    if output:
-                        file = output
-                except subprocess.CalledProcessError:
-                    logger.exception(lambda: "Exception when calling get_wallpaper script")
-            else:
-                logger.warning(
-                    lambda: "get_wallpaper script is missing or not executable: " + script
-                )
-
-            if not file and self.gsettings:
-                file = self.gsettings.get_string("picture-uri")
-
-            if not file:
-                return None
-
-            if file[0] == file[-1] == "'" or file[0] == file[-1] == '"':
-                file = file[1:-1]
-
-            file = file.replace("file://", "")
-            return file
+            SPI_GETDESKWALLPAPER = 0x0073
+            ubuf = ctypes.create_unicode_buffer(200)
+            ctypes.windll.user32.SystemParametersInfoW(SPI_GETDESKWALLPAPER,200,ubuf,0)
+            return ubuf.value
         except Exception:
             logger.exception(lambda: "Could not get current wallpaper")
             return None
@@ -2659,32 +2636,8 @@ class VarietyWindow(Gtk.Window):
             logger.exception(lambda: "Cannot remove all old wallpaper files from %s:" % folder)
 
     def set_desktop_wallpaper(self, wallpaper, original_file, refresh_level):
-        script = os.path.join(self.scripts_folder, "set_wallpaper")
-        if os.access(script, os.X_OK):
-            auto = (
-                "manual"
-                if not self.auto_changed
-                else ("auto" if refresh_level == VarietyWindow.RefreshLevel.ALL else "refresh")
-            )
-            logger.debug(
-                lambda: "Running set_wallpaper script with parameters: %s, %s, %s"
-                % (wallpaper, auto, original_file)
-            )
-            try:
-                subprocess.check_call(
-                    ["timeout", "--kill-after=5", "10", script, wallpaper, auto, original_file]
-                )
-            except subprocess.CalledProcessError as e:
-                if e.returncode == 124:
-                    logger.error(lambda: "Timeout while running set_wallpaper script, killed")
-                logger.exception(
-                    lambda: "Exception when calling set_wallpaper script: %d" % e.returncode
-                )
-        else:
-            logger.error(lambda: "set_wallpaper script is missing or not executable: " + script)
-            if self.gsettings:
-                self.gsettings.set_string("picture-uri", "file://" + wallpaper)
-                self.gsettings.apply()
+        SPI_SETDESKWALLPAPER = 0x0014
+        ctypes.windll.user32.SystemParametersInfoW(20, 0, wallpaper, 3)
 
     def show_hide_history(self, widget=None):
         if self.thumbs_manager.is_showing("history"):

@@ -419,7 +419,7 @@ class ThumbsWindow(Gtk.Window):
 
 if __name__ == "__main__":
     images = []
-    dir = "/usr/share/backgrounds"
+    dir = r"C:\Windows\Web"
     for f in os.listdir(dir):
         file = os.path.join(dir, f)
         if os.path.isfile(file) and file.endswith(".jpg"):
