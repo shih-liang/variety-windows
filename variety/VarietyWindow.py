@@ -1830,13 +1830,13 @@ class VarietyWindow(Gtk.Window):
         if not file:
             file = self.current
         if file:
-            subprocess.Popen(["xdg-open", os.path.dirname(file)])
+            os.startfile(os.path.dirname(file))
 
     def open_file(self, widget=None, file=None):
         if not file:
             file = self.current
         if file:
-            subprocess.Popen(["xdg-open", os.path.realpath(file)])
+            os.startfile(file)
 
     def on_show_origin(self, widget=None):
         if self.url:
@@ -2113,6 +2113,7 @@ class VarietyWindow(Gtk.Window):
     @on_gtk
     def on_quit(self, widget=None):
         logger.info(lambda: "Quitting")
+        self.ind.set_visible(False)
         if self.running:
             self.running = False
 
@@ -2840,7 +2841,7 @@ class VarietyWindow(Gtk.Window):
 
     def quote_view_favorites(self, widget=None):
         if os.path.isfile(self.options.quotes_favorites_file):
-            subprocess.Popen(["xdg-open", self.options.quotes_favorites_file])
+            os.startfile(self.options.quotes_favorites_file)
 
     def on_quotes_pause_resume(self, widget=None, change_enabled=None):
         if change_enabled is None:

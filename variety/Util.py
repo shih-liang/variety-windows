@@ -604,7 +604,7 @@ class Util:
         return f
 
     @staticmethod
-    def request(url, data=None, stream=False, method=None, timeout=5, headers=None):
+    def request(url, data=None, stream=False, method=None, timeout=25, headers=None):
         if url.startswith("//"):
             url = "http:" + url
         headers = headers or {}

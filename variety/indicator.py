@@ -19,7 +19,7 @@
 import logging
 import os
 
-from gi.repository import Gtk  # pylint: disable=E0611
+from gi.repository import Gtk, GObject  # pylint: disable=E0611
 
 from variety.Util import Util, _
 from variety_lib import varietyconfig
@@ -42,6 +42,7 @@ try:
 
         _indicator_backend = "AppIndicator3"
     use_appindicator = True
+    print ("appindicator")
 except (ValueError, ImportError):
     _indicator_backend = "fallback tray"
     use_appindicator = False
@@ -308,7 +309,7 @@ class Indicator:
         self.quit = Gtk.MenuItem(_("Quit"))
         self.quit.connect("activate", window.on_quit)
         self.menu.append(self.quit)
-
+        
         self.menu.show_all()
 
     def create_indicator(self, window):
@@ -318,13 +319,13 @@ class Indicator:
         self.visible = True
 
         def right_click_event(icon, button, time):
-            self.menu.popup(None, None, Gtk.StatusIcon.position_menu, self.status_icon, 0, time)
+            self.menu.popup(None, None, None, self.status_icon, button, time)
 
         def left_click_event(data):
             self.menu.popup(
                 None,
                 None,
-                Gtk.StatusIcon.position_menu,
+                None,
                 self.status_icon,
                 0,
                 Gtk.get_current_event_time(),
@@ -333,7 +334,7 @@ class Indicator:
         def on_indicator_scroll_status_icon(status_icon, event):
             window.on_indicator_scroll(None, 1, event.direction)
 
-        icon_path = varietyconfig.get_data_file("media", "variety-indicator.png")
+        icon_path = varietyconfig.get_data_file("media", "variety-indicator.svg")
         if use_appindicator:
             self.indicator = AppIndicator3.Indicator.new(
                 "variety", "", AppIndicator3.IndicatorCategory.APPLICATION_STATUS
@@ -380,13 +381,13 @@ class Indicator:
                 set_from_theme_icon(THEME_ICON_NAME)
                 return
             else:
-                icon_path = varietyconfig.get_data_file("media", "variety-indicator.png")
+                icon_path = varietyconfig.get_data_file("media", "variety-indicator.svg")
         elif icon == "Dark":
             if Gtk.IconTheme.get_default().has_icon(THEME_ICON_NAME_DARK):
                 set_from_theme_icon(THEME_ICON_NAME_DARK)
                 return
             else:
-                icon_path = varietyconfig.get_data_file("media", "variety-indicator-dark.png")
+                icon_path = varietyconfig.get_data_file("media", "variety-indicator-dark.svg")
         elif icon in ["1", "2", "3", "4"]:
             if Gtk.IconTheme.get_default().has_icon(THEME_ICON_NAME_NUM.format(icon)):
                 set_from_theme_icon(THEME_ICON_NAME_NUM.format(icon))
@@ -398,7 +399,7 @@ class Indicator:
         elif icon and os.access(icon, os.R_OK) and Util.is_image(icon):
             icon_path = icon
         else:
-            icon_path = varietyconfig.get_data_file("media", "variety-indicator.png")
+            icon_path = varietyconfig.get_data_file("media", "variety-indicator.svg")
 
         if self.indicator:
             logger.info(lambda: "Showing indicator icon image: " + icon_path)
