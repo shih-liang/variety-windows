@@ -1,6 +1,6 @@
 # Variety-Windows
 
-Variety-Windows is Windows port of Variety[https://github.com/varietywalls/variety],
+Variety-Windows is Windows port of [Variety](https://github.com/varietywalls/variety),
 which is a wallpaper manager. It supports numerous desktops
 and wallpaper sources, including local files and online services: Flickr,
 Wallhaven, Unsplash, and more.
