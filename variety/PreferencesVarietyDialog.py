@@ -724,15 +724,13 @@ class PreferencesVarietyDialog(PreferencesDialog):
         row = model[rows[0]]
         type = row[1]
         if type in Options.SourceType.LOCAL_PATH_TYPES:
-            subprocess.Popen(["xdg-open", os.path.realpath(row[2])])
+            os.startfile(os.path.realpath(row[2]))
         elif type == Options.SourceType.FAVORITES:
-            subprocess.Popen(["xdg-open", self.parent.options.favorites_folder])
+            os.startfile(self.parent.options.favorites_folder)
         elif type == Options.SourceType.FETCHED:
-            subprocess.Popen(["xdg-open", self.parent.options.fetched_folder])
+            os.startfile(self.parent.options.fetched_folder)
         else:
-            subprocess.Popen(
-                ["xdg-open", self.parent.get_folder_of_source(self.model_row_to_source(row))]
-            )
+            os.startfile(self.parent.get_folder_of_source(self.model_row_to_source(row)))
 
     def on_use_clicked(self, widget=None):
         model, rows = self.ui.sources.get_selection().get_selected_rows()
